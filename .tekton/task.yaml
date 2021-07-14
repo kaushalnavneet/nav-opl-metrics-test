@@ -15,11 +15,6 @@ spec:
       args:
         - echo $BUILD_NUMBER;
           echo "COMPLETED"
-    - name: bad-image
-      image: ibmcom/bad-pipeline-base-image:latest
-      command: ["bash", "-c"]
-      args:
-        - echo "Can't get here"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
