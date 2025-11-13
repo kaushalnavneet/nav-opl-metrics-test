@@ -7,7 +7,7 @@ spec:
     - name: SOME_ENV
   steps:
     - name: my-step
-      image: ubuntu
+      image: icr.io/continuous-delivery/pipeline/pipeline-base-image:2.83
       env:
         - name: SOME_ENV
           value: $(params.SOME_ENV)
