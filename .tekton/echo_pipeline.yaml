@@ -31,6 +31,7 @@ spec:
   params:
     - name: buildnumber
       description: the pipeline pvc name
+    - name: SOME_ENV
   tasks:
     - name: sample-out-task
       taskRef:
