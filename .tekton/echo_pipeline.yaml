@@ -1,30 +1,81 @@
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: echo-task
+  name: my-task
 spec:
   params:
     - name: SOME_ENV
-      type: string
   steps:
-    - name: print-build-number
-      image: alpine
-      script: |
-        #!/bin/sh
-        echo "SOME_ENV from pipeline param: $(params.SOME_ENV)"
+    - name: my-step
+      image: ubuntu
+      env:
+        - name: SOME_ENV
+          value: $(params.SOME_ENV)
+      command: ["/bin/bash", "-c"]
+      args:
+        - |
+          echo "test"
+          echo "SOME_ENV is: ${SOME_ENV}"
 ---
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  name: echo-pipeline
+  name: pipeline
 spec:
   params:
+    - name: buildnumber
+      description: the pipeline pvc name
     - name: SOME_ENV
-      type: string
   tasks:
-    - name: echo
+    - name: my-task
       taskRef:
-        name: echo-task
+        name: my-task
       params:
         - name: SOME_ENV
           value: $(params.SOME_ENV)
+---
+apiVersion: tekton.dev/v1
+kind: TriggerTemplate
+metadata:
+  name: template
+spec:
+  params:
+    - name: buildnumber
+      description: thebuildnuminput
+      default: buildnumberfailedjerh
+    - name: SOME_ENV
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        name: pipelinerun-$(uid)
+      spec:
+        pipelineRef:
+            name: pipeline
+        params:
+        - name: buildnumber
+          value: $(params.buildnumber)
+        - name: SOME_ENV
+          value: $(params.SOME_ENV)
+---
+apiVersion: tekton.dev/v1
+kind: TriggerBinding
+metadata:
+  name: binding
+spec:
+  params:
+    - name: repository
+      value: "https://github.com/open-toolchain/hello-tekton"
+    - name: revision
+      value: "master"
+---
+apiVersion: tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: listener
+spec:
+  triggers:
+    - binding:
+        name: binding
+      template:
+        name: template
