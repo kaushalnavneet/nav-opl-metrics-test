@@ -36,6 +36,9 @@ spec:
     - name: sample-out-task
       taskRef:
         name: sample-out-task
+      params:
+        - name: SOME_ENV
+          value: $(params.SOME_ENV)
 ---
 apiVersion: tekton.dev/v1beta1
 kind: TriggerTemplate
