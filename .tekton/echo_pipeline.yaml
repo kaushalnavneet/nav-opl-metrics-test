@@ -1,29 +1,23 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: sample-out-task
+  name: my-task
 spec:
-  input:
-    params:
-      - name: buildnumber
-        description: test
-      - name: SOME_ENV
+  params:
+    - name: SOME_ENV
   steps:
-    - name: task-two-step-four
+    - name: my-step
       image: ubuntu
       env:
-        - name: BUILD_NUMBER
-          value: ${input.params.buildnumber)
         - name: SOME_ENV
-          value: $(input.params.SOME_ENV)
+          value: $(params.SOME_ENV)
       command: ["/bin/bash", "-c"]
       args:
         - |
           echo "test"
-          echo "BUILD_NUMBER: ${BUILD_NUMBER}"
-          echo "SOME_ENV: ${SOME_ENV}"
+          echo "SOME_ENV is: ${SOME_ENV}"
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: pipeline
@@ -33,14 +27,14 @@ spec:
       description: the pipeline pvc name
     - name: SOME_ENV
   tasks:
-    - name: sample-out-task
+    - name: my-task
       taskRef:
-        name: sample-out-task
+        name: my-task
       params:
         - name: SOME_ENV
           value: $(params.SOME_ENV)
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: TriggerTemplate
 metadata:
   name: template
@@ -49,7 +43,6 @@ spec:
     - name: buildnumber
       description: thebuildnuminput
       default: buildnumberfailedjerh
-    - name: SOME_ENV
   resourcetemplates:
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineRun
@@ -61,10 +54,8 @@ spec:
         params:
         - name: buildnumber
           value: $(params.buildnumber)
-        - name: SOME_ENV
-          value: $(params.SOME_ENV)
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: TriggerBinding
 metadata:
   name: binding
