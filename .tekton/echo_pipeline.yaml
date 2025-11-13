@@ -5,6 +5,13 @@ metadata:
 spec:
   params:
     - name: SOME_ENV
+  stepTemplate:
+    env:
+      - name: GIT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cd-secret
+            key: GIT_TOKEN
   steps:
     - name: my-step
       image: ubuntu
@@ -16,6 +23,9 @@ spec:
         - |
           echo "test"
           echo "SOME_ENV is: ${SOME_ENV}"
+          echo "Cloning GH Repository"
+          git clone --depth=1 https://${GIT_TOKEN}@github.ibm.com/otc-cti-broker
+          echo "Cloning done"
 ---
 apiVersion: tekton.dev/v1
 kind: Pipeline
