@@ -15,7 +15,7 @@ spec:
         - name: BUILD_NUMBER
           value: $(inputs.params.buildnumber)
         - name: SOME_ENV
-          value: $(params.SOME_ENV)
+          value: $(inputs.params.SOME_ENV)
       command: ["/bin/bash", "-c"]
       args:
         - |
