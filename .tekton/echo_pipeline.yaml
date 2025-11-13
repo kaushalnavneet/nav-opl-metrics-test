@@ -3,19 +3,18 @@ kind: Task
 metadata:
   name: sample-out-task
 spec:
-  inputs:
-    params:
-      - name: buildnumber
-        description: test
-      - name: SOME_ENV
+  params:
+    - name: buildnumber
+      description: test
+    - name: SOME_ENV
   steps:
     - name: task-two-step-four
       image: ubuntu
       env:
         - name: BUILD_NUMBER
-          value: $(inputs.params.buildnumber)
+          value: ${params.buildnumber)
         - name: SOME_ENV
-          value: $(inputs.params.SOME_ENV)
+          value: $(params.SOME_ENV)
       command: ["/bin/bash", "-c"]
       args:
         - |
