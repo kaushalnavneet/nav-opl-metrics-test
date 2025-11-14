@@ -17,7 +17,6 @@ spec:
           echo "test"
           echo "SOME_ENV is: ${SOME_ENV}"
           echo "Cloning GH Repository"
-          git clone --depth=1 https://github.ibm.com/otc-cti-broker
           echo "Cloning done"
 ---
 apiVersion: tekton.dev/v1
